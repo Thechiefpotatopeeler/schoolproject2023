@@ -12,6 +12,9 @@
 # iDea files
 /.idea
 
+# JavaDoc documentation
+/JavaDoc
+
 # Package Files #
 *.jar
 *.war

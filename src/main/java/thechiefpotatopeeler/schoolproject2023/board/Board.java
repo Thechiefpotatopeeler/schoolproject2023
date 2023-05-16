@@ -1,5 +1,7 @@
 package thechiefpotatopeeler.schoolproject2023.board;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -9,7 +11,9 @@ import java.util.Collections;
 
 public class Board {
 
-    public static ArrayList<ArrayList<Boolean>> boardArray;
+    private static ArrayList<ArrayList<Boolean>> boardArray;
+
+    public static final String OUT_OF_BOUNDS_MESSAGE = "Cell out of bounds";
 
     public Board(){
 
@@ -23,5 +27,51 @@ public class Board {
      * */
     public static void fillBlankBoard(int dimX, int dimY){
         boardArray = new ArrayList<ArrayList<Boolean>>(Collections.nCopies(dimX, new ArrayList<Boolean>(Collections.nCopies(dimY,false))));
+    }
+    /**
+     * Method that gets the value of the cell
+     *
+     * @param dimX Integer x value of the cell
+     * @param dimY Integer y value of the cell
+     * */
+    public static @Nullable Boolean getCell(int dimX, int dimY){
+        try{
+            return boardArray.get(dimX).get(dimY);
+        } catch(IndexOutOfBoundsException e){
+            System.out.println(OUT_OF_BOUNDS_MESSAGE);
+        }
+        return null;
+    }
+
+    public static ArrayList<ArrayList<Boolean>> getBoard(){
+        return boardArray;
+    }
+
+    /**
+     * Method that toggles the value of the cell
+     *
+     * @param dimX Integer x value of the cell
+     * @param dimY Integer y value of the cell
+     * */
+    public static void toggleCell(int dimX, int dimY){
+        try{
+            boardArray.get(dimX).set(dimY,!boardArray.get(dimX).get(dimY));
+        } catch(IndexOutOfBoundsException e){
+            System.out.println(OUT_OF_BOUNDS_MESSAGE);
+        }
+    }
+    /**
+     * Method that sets the value of the cell
+     *
+     * @param dimX Integer x value of the cell
+     * @param dimY Integer y value of the cell
+     * */
+    public static void setCell(int dimX, int dimY, boolean state){
+        try{
+            boardArray.get(dimX).set(dimY, state);
+            //System.out.println(boardArray.get(dimX));
+        } catch(IndexOutOfBoundsException e){
+            System.out.println(OUT_OF_BOUNDS_MESSAGE);
+        }
     }
 }

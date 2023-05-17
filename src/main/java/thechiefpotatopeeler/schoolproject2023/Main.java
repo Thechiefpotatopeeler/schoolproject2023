@@ -11,7 +11,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Board.fillBlankBoard(5,5);
-        Board.setCell(1,1,true);
+        Board.fillBlankBoard(50,50);
+        Board.setCell(1,4,true);
+
+        for (ArrayList<Boolean> row : Board.getBoard()) {
+            for (Boolean value : row) {
+                System.out.print(value ? "1" : "0");
+            }
+            System.out.println();
+        }
     }
 }

@@ -25,8 +25,12 @@ public class Board {
      * @param dimX The x dimension of the board it generates
      * @param dimY The y dimension of the board it generates
      * */
-    public static void fillBlankBoard(int dimX, int dimY){
-        boardArray = new ArrayList<ArrayList<Boolean>>(Collections.nCopies(dimX, new ArrayList<Boolean>(Collections.nCopies(dimY,false))));
+    public static void fillBlankBoard(int dimX, int dimY) {
+        boardArray = new ArrayList<>();
+        for (int i = 0; i < dimX; i++) {
+            ArrayList<Boolean> row = new ArrayList<>(Collections.nCopies(dimY, false));
+            boardArray.add(row);
+        }
     }
     /**
      * Method that gets the value of the cell
@@ -36,7 +40,7 @@ public class Board {
      * */
     public static @Nullable Boolean getCell(int dimX, int dimY){
         try{
-            return boardArray.get(dimX).get(dimY);
+            return boardArray.get(dimY).get(dimX);
         } catch(IndexOutOfBoundsException e){
             System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }
@@ -55,7 +59,7 @@ public class Board {
      * */
     public static void toggleCell(int dimX, int dimY){
         try{
-            boardArray.get(dimX).set(dimY,!boardArray.get(dimX).get(dimY));
+            boardArray.get(dimY).set(dimX,!boardArray.get(dimX).get(dimY));
         } catch(IndexOutOfBoundsException e){
             System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }
@@ -68,7 +72,7 @@ public class Board {
      * */
     public static void setCell(int dimX, int dimY, boolean state){
         try{
-            boardArray.get(dimX).set(dimY, state);
+            boardArray.get(dimY).set(dimX,state);
             //System.out.println(boardArray.get(dimX));
         } catch(IndexOutOfBoundsException e){
             System.out.println(OUT_OF_BOUNDS_MESSAGE);

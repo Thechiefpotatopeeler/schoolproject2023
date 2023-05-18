@@ -1,6 +1,7 @@
 package thechiefpotatopeeler.schoolproject2023;
 
 import thechiefpotatopeeler.schoolproject2023.board.Board;
+import thechiefpotatopeeler.schoolproject2023.display.TextUI;
 
 import java.util.ArrayList;
 
@@ -13,12 +14,6 @@ public class Main {
 
         Board.fillBlankBoard(50,50);
         Board.setCell(1,4,true);
-
-        for (ArrayList<Boolean> row : Board.getBoard()) {
-            for (Boolean value : row) {
-                System.out.print(value ? "1" : "0");
-            }
-            System.out.println();
-        }
+        TextUI.printBoard();
     }
 }

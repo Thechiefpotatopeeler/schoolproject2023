@@ -12,8 +12,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Board.fillBlankBoard(50,50);
+        Board.fillBlankBoard(10,10);
         Board.setCell(1,4,true);
+        Board.setCell(1,3,true);
+        Board.setCell(2,4,true);
+        //Board.setCell(2,3,true);
+        TextUI.printBoard();
+        Board.advanceGenerations(1);
         TextUI.printBoard();
     }
 }

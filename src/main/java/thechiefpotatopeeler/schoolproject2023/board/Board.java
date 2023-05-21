@@ -15,24 +15,31 @@ public class Board {
 
     public static final String OUT_OF_BOUNDS_MESSAGE = "Cell out of bounds";
 
-    public ArrayList<ArrayList<Boolean>> advanceGeneration(){
+    public static ArrayList<ArrayList<Boolean>> generateNewGeneration(){
         ArrayList<ArrayList<Boolean>> newBoard = currentBoard;
         for(ArrayList<Boolean> row : currentBoard){
             for(Boolean cell : row){
-                int cellX = currentBoard.indexOf(row);
-                int cellY = row.indexOf(cell);
-                if(!cell){
+                int cellY = currentBoard.indexOf(row);
+                int cellX = row.indexOf(cell);
+                if(!cell){//When the cell is dead
                     if(countLivingCellNeighbours(cellX,cellY)==3){
                         newBoard.get(cellY).set(cellX, true);
                     }
-                } else{
+                } else{//When the cell is alive
                     if(countLivingCellNeighbours(cellX,cellY)<2||countLivingCellNeighbours(cellX,cellY)>4){
-                        newBoard.get(cellY).set(cellX, false);
+                        System.out.println(String.format("This cell should die: %d,%d because it has %d neighbours",cellX,cellY, countLivingCellNeighbours(cellY,cellX)));
+                        newBoard.get(cellX).set(cellY, false);
                     }
                 }
             }
         }
         return newBoard;
+    }
+
+    public static void advanceGenerations(int generations){
+        for(int i=0; i<generations;i++){
+            currentBoard = generateNewGeneration();
+        }
     }
 
     /**
@@ -49,16 +56,21 @@ public class Board {
         }
     }
 
+    public static boolean isEdgeCell(int dimX, int dimY){
+        if(dimY>=currentBoard.size()||dimY<0||dimX<0||dimY>=currentBoard.get(dimX).size()) return true;
+        else return false;
+    }
+
     public static int countLivingCellNeighbours(int dimX, int dimY){
         int count=0;
-        if(getCell(dimX,dimY-1)) count++;
-        if(getCell(dimX,dimY+1)) count++;
-        if(getCell(dimX-1,dimY)) count++;
-        if(getCell(dimX-1,dimY-1)) count++;
-        if(getCell(dimX-1,dimY+1)) count++;
-        if(getCell(dimX+1,dimY)) count++;
-        if(getCell(dimX+1,dimY-1)) count++;
-        if(getCell(dimX+1,dimY+1)) count++;
+        if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX, dimY + 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY + 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY + 1))) count++;
         return count;
     }
     /**
@@ -71,7 +83,7 @@ public class Board {
         try{
             return currentBoard.get(dimY).get(dimX);
         } catch(IndexOutOfBoundsException e){
-            System.out.println(OUT_OF_BOUNDS_MESSAGE);
+            //System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }
         return null;
     }

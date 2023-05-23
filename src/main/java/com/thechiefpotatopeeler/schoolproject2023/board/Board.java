@@ -1,4 +1,4 @@
-package thechiefpotatopeeler.schoolproject2023.board;
+package com.thechiefpotatopeeler.schoolproject2023.board;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,15 +21,15 @@ public class Board {
             for(Boolean cell : row){
                 int cellY = currentBoard.indexOf(row);
                 int cellX = row.indexOf(cell);
-                if(!cell){//When the cell is dead
-                    if(countLivingCellNeighbours(cellX,cellY)==3){
-                        newBoard.get(cellY).set(cellX, true);
-                    }
-                } else{//When the cell is alive
-                    if(countLivingCellNeighbours(cellX,cellY)<2||countLivingCellNeighbours(cellX,cellY)>4){
-                        System.out.println(String.format("This cell should die: %d,%d because it has %d neighbours",cellX,cellY, countLivingCellNeighbours(cellY,cellX)));
-                        newBoard.get(cellX).set(cellY, false);
-                    }
+                int adjecentCells = countLivingCellNeighbours(cellX,cellY);
+                System.out.println(adjecentCells);
+                if((currentBoard.get(cellY).get(cellX)&&adjecentCells==3)){//When the cell becomes alive
+                    newBoard.get(cellY).set(cellX,true);
+                    System.out.println(String.format("This cell should come alive: %d,%d",cellX,cellY));
+                } else if(cell&&(adjecentCells<2||adjecentCells>3)){//When the cell is going to die
+                    newBoard.get(cellY).set(cellX,false);
+                }else {
+                 //System.out.println("Either something is wrong or this cell should stay the same");
                 }
             }
         }
@@ -57,10 +57,15 @@ public class Board {
     }
 
     public static boolean isEdgeCell(int dimX, int dimY){
-        if(dimY>=currentBoard.size()||dimY<0||dimX<0||dimY>=currentBoard.get(dimX).size()) return true;
+        if(dimY==currentBoard.size()||dimY==0||dimX==0||dimY==currentBoard.get(dimX).size()) return true;
         else return false;
     }
-
+    /**
+     * Method that returns the number of living neighbouring cells
+     * @return Returns an integer value which is the number of cells
+     * @param dimX The X dimension of the cell
+     * @param dimY the Y dimension of the cell
+     * */
     public static int countLivingCellNeighbours(int dimX, int dimY){
         int count=0;
         if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
@@ -100,7 +105,7 @@ public class Board {
      * */
     public static void toggleCell(int dimX, int dimY){
         try{
-            currentBoard.get(dimY).set(dimX,!currentBoard.get(dimX).get(dimY));
+            currentBoard.get(dimY).set(dimX,!currentBoard.get(dimY).get(dimX));
         } catch(IndexOutOfBoundsException e){
             System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }

@@ -1,6 +1,6 @@
-package thechiefpotatopeeler.schoolproject2023.display;
+package com.thechiefpotatopeeler.schoolproject2023.display;
 
-import thechiefpotatopeeler.schoolproject2023.board.Board;
+import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 
 import java.util.ArrayList;
 

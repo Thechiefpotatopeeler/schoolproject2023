@@ -15,26 +15,26 @@ public class Board {
 
     public static final String OUT_OF_BOUNDS_MESSAGE = "Cell out of bounds";
 
-    public static ArrayList<ArrayList<Boolean>> generateNewGeneration(){
-        ArrayList<ArrayList<Boolean>> newBoard = currentBoard;
-        for(ArrayList<Boolean> row : currentBoard){
-            for(Boolean cell : row){
-                int cellY = currentBoard.indexOf(row);
-                int cellX = row.indexOf(cell);
-                int adjecentCells = countLivingCellNeighbours(cellX,cellY);
-                System.out.println(adjecentCells);
-                if((currentBoard.get(cellY).get(cellX)&&adjecentCells==3)){//When the cell becomes alive
-                    newBoard.get(cellY).set(cellX,true);
-                    System.out.println(String.format("This cell should come alive: %d,%d",cellX,cellY));
-                } else if(cell&&(adjecentCells<2||adjecentCells>3)){//When the cell is going to die
-                    newBoard.get(cellY).set(cellX,false);
-                }else {
-                 //System.out.println("Either something is wrong or this cell should stay the same");
+    public static ArrayList<ArrayList<Boolean>> generateNewGeneration() {
+        ArrayList<ArrayList<Boolean>> newBoard = new ArrayList<>();
+        for (int i = 0; i < currentBoard.size(); i++) {
+            ArrayList<Boolean> newRow = new ArrayList<>();
+            for (int j = 0; j < currentBoard.get(i).size(); j++) {
+                boolean cell = currentBoard.get(i).get(j);
+                int adjacentCells = countLivingCellNeighbours(j, i);
+                if (cell && (adjacentCells < 2 || adjacentCells > 3)) {
+                    newRow.add(false);
+                } else if (!cell && adjacentCells == 3) {
+                    newRow.add(true);
+                } else {
+                    newRow.add(cell);
                 }
             }
+            newBoard.add(newRow);
         }
         return newBoard;
     }
+
 
     public static void advanceGenerations(int generations){
         for(int i=0; i<generations;i++){
@@ -66,16 +66,19 @@ public class Board {
      * @param dimX The X dimension of the cell
      * @param dimY the Y dimension of the cell
      * */
-    public static int countLivingCellNeighbours(int dimX, int dimY){
-        int count=0;
-        if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX, dimY + 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY - 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY + 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY - 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY + 1))) count++;
+    public static int countLivingCellNeighbours(int dimX, int dimY) {
+        int count = 0;
+        int startX = Math.max(0, dimX - 1);
+        int startY = Math.max(0, dimY - 1);
+        int endX = Math.min(dimX + 1, currentBoard.size() - 1);
+        int endY = Math.min(dimY + 1, currentBoard.get(0).size() - 1);
+
+        for (int i = startX; i <= endX; i++) {
+            for (int j = startY; j <= endY; j++) {
+                if (i == dimX && j == dimY) continue; // Skip the central cell
+                if (Boolean.TRUE.equals(getCell(i, j))) count++;
+            }
+        }
         return count;
     }
     /**

@@ -17,7 +17,7 @@ public class Main {
         Board.setCell(1,2,true);
         //Board.setCell(2,3,true);
         TextUI.printBoard();
-        Board.advanceGenerations(1);
+        Board.advanceGenerations(3);
         TextUI.printBoard();
     }
 }

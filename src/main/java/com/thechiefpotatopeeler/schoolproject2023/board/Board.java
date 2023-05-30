@@ -1,5 +1,6 @@
 package com.thechiefpotatopeeler.schoolproject2023.board;
 
+import com.thechiefpotatopeeler.schoolproject2023.display.TextUI;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -13,8 +14,15 @@ public class Board {
 
     private static ArrayList<ArrayList<Boolean>> currentBoard;
 
+    private static int generationCount=0;
+
     public static final String OUT_OF_BOUNDS_MESSAGE = "Cell out of bounds";
 
+    /**
+     *  The method that actually generates a new generation
+     *
+     * @Return An ArrayList<> of ArrayList<>s of Booleans
+     * */
     public static ArrayList<ArrayList<Boolean>> generateNewGeneration() {
         ArrayList<ArrayList<Boolean>> newBoard = new ArrayList<>();
         for (int i = 0; i < currentBoard.size(); i++) {
@@ -35,10 +43,17 @@ public class Board {
         return newBoard;
     }
 
-
+    /**
+     *  Method that advances the board a certain number of generations.
+     *
+     * @param generations The number of generations to advance
+     * */
     public static void advanceGenerations(int generations){
         for(int i=0; i<generations;i++){
+            generationCount++;
+            System.out.println(String.format("Generation %s:", generationCount));
             currentBoard = generateNewGeneration();
+            TextUI.printBoard();
         }
     }
 
@@ -50,12 +65,21 @@ public class Board {
      * */
     public static void fillBlankBoard(int dimX, int dimY) {
         currentBoard = new ArrayList<>();
-        for (int i = 0; i < dimX; i++) {
-            ArrayList<Boolean> row = new ArrayList<>(Collections.nCopies(dimY, false));
+        for (int i = 0; i < dimY; i++) {
+            ArrayList<Boolean> row = new ArrayList<>(Collections.nCopies(dimX, false));
             currentBoard.add(row);
         }
     }
 
+    /**
+     *  Returns true if the cell is on the edge of the board
+     *  Currently not in use
+     *
+     * @return Returns true or false ^^^^^^^^^^^^^^^^^
+     *
+     * @param dimX X dimension of cell
+     * @param dimY Y dimension of cell
+     * */
     public static boolean isEdgeCell(int dimX, int dimY){
         if(dimY==currentBoard.size()||dimY==0||dimX==0||dimY==currentBoard.get(dimX).size()) return true;
         else return false;
@@ -66,19 +90,16 @@ public class Board {
      * @param dimX The X dimension of the cell
      * @param dimY the Y dimension of the cell
      * */
-    public static int countLivingCellNeighbours(int dimX, int dimY) {
-        int count = 0;
-        int startX = Math.max(0, dimX - 1);
-        int startY = Math.max(0, dimY - 1);
-        int endX = Math.min(dimX + 1, currentBoard.size() - 1);
-        int endY = Math.min(dimY + 1, currentBoard.get(0).size() - 1);
-
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                if (i == dimX && j == dimY) continue; // Skip the central cell
-                if (Boolean.TRUE.equals(getCell(i, j))) count++;
-            }
-        }
+    public static int countLivingCellNeighbours(int dimX, int dimY){
+        int count=0;
+        if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX, dimY + 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX - 1, dimY + 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY - 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY + 1))) count++;
         return count;
     }
     /**
@@ -96,6 +117,9 @@ public class Board {
         return null;
     }
 
+    /**
+     * Temporary method
+     * */
     public static ArrayList<ArrayList<Boolean>> getBoard(){
         return currentBoard;
     }
@@ -124,7 +148,7 @@ public class Board {
             currentBoard.get(dimY).set(dimX,state);
             //System.out.println(currentBoard().get(dimX));
         } catch(IndexOutOfBoundsException e){
-            System.out.println(OUT_OF_BOUNDS_MESSAGE);
+           // System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }
     }
 }

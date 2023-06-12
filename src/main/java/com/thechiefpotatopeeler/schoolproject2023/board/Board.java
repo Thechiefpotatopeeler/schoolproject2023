@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public class Board extends ArrayList<ArrayList<Boolean>>{
 
-    private ArrayList<ArrayList<Boolean>> board;
+    private ArrayList<ArrayList<Boolean>> board;//The nested arrayLists which contain the cell data
 
     /**
      * This function generates the board according to provided dimensions and fills it with blank cells
@@ -65,6 +65,13 @@ public class Board extends ArrayList<ArrayList<Boolean>>{
             // System.out.println(OUT_OF_BOUNDS_MESSAGE);
         }
     }
+
+    /**
+     * Method that counts the number of living cells around a cell
+     *
+     * @param dimX Integer x value of the cell
+     * @param dimY Integer y value of the cell
+     * */
     public int countLivingCellNeighbours(int dimX, int dimY){
         int count=0;
         if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
@@ -78,15 +85,31 @@ public class Board extends ArrayList<ArrayList<Boolean>>{
         return count;
    }
 
+   /**
+    * Method that returns the width of the board
+    * @return int the width of the board
+    * */
    public int getWidth(){
         return board.size();
    }
 
+   /**
+    * Method that returns the height of the board
+    * @return int the height of the board
+    * */
    public int getHeight(){
         return board.get(0).size();
    }
 
+    /**
+     * Method that replaces the current board with a new one
+     * @param newBoard ArrayList<ArrayList<Boolean>> the new board
+     * */
    public void replaceBoard(ArrayList<ArrayList<Boolean>> newBoard){this.board = newBoard;}
 
+    /**
+     * Method that returns the current board
+     * @return ArrayList<ArrayList<Boolean>> the current board
+     * */
     public ArrayList<ArrayList<Boolean>> getBoard(){return board;}
 }

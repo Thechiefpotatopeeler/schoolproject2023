@@ -15,13 +15,22 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+/**
+ * The class which handles the GUI (currently running the application when using GUI as well)
+ * */
+@SuppressWarnings("unnamed module")
 public class UIApplication extends Application {
 
-    public Stage window;
-    public static int cellUISize = 30;
+    public Stage window; // The window which the application runs in
 
-    public static Pane cellGrid;
+    public static int cellUISize = 30;// The size of the cell UI components
 
+    public static Pane cellGrid;// The grid of cells
+
+    /**
+     * The method which runs when the application is started
+     * @param stage The stage which the application runs in
+     * */
     @Override
     public void start(Stage stage) throws Exception {
         window = stage;
@@ -31,54 +40,78 @@ public class UIApplication extends Application {
         stage.show();
     }
 
+    /**
+     * The switches the scene to the game scene
+     * */
     public void enterGame() {
         window.setScene(this.buildGameScene());
     }
 
+    /**
+     * Builds the scene for the menu
+     * @return The menu scene
+     * */
     public Scene buildMenuScene(){
+        //The basic layout
         HBox layout = new HBox();
 
+        //The start button
         Button startButton = new Button("Start");
         startButton.setOnAction(e -> enterGame());
 
+        //The exit button
         Button exitButton = new Button("Quit");
         exitButton.setOnAction(e -> Platform.exit());
 
+        //Adds the buttons to the layout and returns the full scene
         layout.getChildren().addAll(startButton, exitButton);
-
         Scene scene = new Scene(layout, 300, 250);
         return scene;
     }
 
+    /**
+     * Initializes the cell grid
+     * @return The game scene
+     * */
     public Scene buildGameScene(){
         initCellGrid();
 
+        //Creates the bottom menu buttons
         HBox bottomMenu = new HBox();
         Button menuButton = new Button("Main menu");
-        menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
-
         Button advanceGenerationButton = new Button("Advance 1 Generation");
+
+        //Adds the actions to the buttons
+        menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
         advanceGenerationButton.setOnAction(e -> {
             BoardHandler.advanceGenerations(1);
             updateCellUI();
         });
 
+        //Completes and returns the scene
         bottomMenu.getChildren().addAll(menuButton, advanceGenerationButton);
-
         BorderPane layout = new BorderPane();
         layout.setCenter(cellGrid);
         layout.setBottom(bottomMenu);
         return new Scene(layout, 300, 250);
     }
 
+    /**
+     * Initializes the game board
+     * */
     public static void initGame() {
         BoardHandler.currentBoard.fillBlankBoard(10, 10);
-        BoardHandler.currentBoard.setCell(0, 0, true);
-        BoardHandler.currentBoard.setCell(1, 0, true);
-        BoardHandler.currentBoard.setCell(0, 1, true);
-        BoardHandler.currentBoard.setCell(1, 1, true);
+//        BoardHandler.currentBoard.setCell(0, 0, true);
+//        BoardHandler.currentBoard.setCell(1, 0, true);
+//        BoardHandler.currentBoard.setCell(0, 1, true);
+//        BoardHandler.currentBoard.setCell(1, 1, true);
     }
 
+    /**
+     * Initializes the cell grid
+     * Sets the cell grid to a pane and fills with newly generated cell UI components
+     * Adds the mouse click functionality to the cell grid
+     * */
     public static void initCellGrid(){
         cellGrid = new Pane();
         Board board = BoardHandler.currentBoard;
@@ -89,6 +122,7 @@ public class UIApplication extends Application {
                 cellGrid.getChildren().add(cellUI);
             }
         }
+        //Adds the action to the cell grid
         cellGrid.setOnMouseClicked(e -> {
             int x = (int) e.getX() / cellUISize;
             int y = (int) e.getY() / cellUISize;
@@ -97,6 +131,9 @@ public class UIApplication extends Application {
         });
     }
 
+    /**
+     * Updates the cell UI components to match the current board
+     * */
     public static void updateCellUI() {
         for (int i = 0; i < cellGrid.getChildren().size(); i++) {
             CellUIComponent cellUI = (CellUIComponent) cellGrid.getChildren().get(i);

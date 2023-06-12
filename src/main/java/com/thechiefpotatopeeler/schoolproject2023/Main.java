@@ -1,6 +1,5 @@
 package com.thechiefpotatopeeler.schoolproject2023;
 
-import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import com.thechiefpotatopeeler.schoolproject2023.display.gui.UIApplication;
 
 /**
@@ -8,7 +7,13 @@ import com.thechiefpotatopeeler.schoolproject2023.display.gui.UIApplication;
  * */
 public class Main {
 
+    /**
+     * The main method of the program
+     *
+     * @param args The arguments passed to the program
+     * */
     public static void main(String[] args) {
+        //Launches the game in its appropriate version depending on the arguments passed
         switch(args[0].toLowerCase()){
             case "gui":
                 UIApplication.launch(UIApplication.class, args);
@@ -23,6 +28,9 @@ public class Main {
     }
 
 
+    /**
+     * The method that runs the CLI version of the game
+     * */
     private static void runCLIApplication(){
     }
 }

@@ -52,9 +52,9 @@ public class BoardHandler {
     public static void advanceGenerations(int generations){
         for(int i=0; i<generations;i++){
             generationCount++;
-            System.out.println(String.format("Generation %s:", generationCount));
+            //System.out.println(String.format("Generation %s:", generationCount));
             currentBoard.replaceBoard(generateNewGeneration());
-            TextUI.printBoard();
+            //TextUI.printBoard();
         }
     }
 

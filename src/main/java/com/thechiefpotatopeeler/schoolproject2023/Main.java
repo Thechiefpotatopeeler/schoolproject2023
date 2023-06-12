@@ -1,5 +1,6 @@
 package com.thechiefpotatopeeler.schoolproject2023;
 
+import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import com.thechiefpotatopeeler.schoolproject2023.display.gui.UIApplication;
 
 /**
@@ -8,16 +9,20 @@ import com.thechiefpotatopeeler.schoolproject2023.display.gui.UIApplication;
 public class Main {
 
     public static void main(String[] args) {
+        switch(args[0].toLowerCase()){
+            case "gui":
+                UIApplication.launch(UIApplication.class, args);
+                break;
+            case "cli":
+                runCLIApplication();
+                break;
+            default:
+                System.out.println("Please add argument gui or cli");
+                break;
+        }
+    }
 
-//        BoardHandler.currentBoard.fillBlankBoard(50,30);
-//        BoardHandler.currentBoard.setCell(7,10,true);
-//        BoardHandler.currentBoard.setCell(7,11,true);
-//        BoardHandler.currentBoard.setCell(7,12,true);
-//        BoardHandler.currentBoard.setCell(6,12,true);
-//        BoardHandler.currentBoard.setCell(5,11, true);
-//        TextUI.printBoard();
-//        BoardHandler.advanceGenerations(100);
-        //TextUI.printBoard();
-        UIApplication.launch(UIApplication.class, args);
+
+    private static void runCLIApplication(){
     }
 }

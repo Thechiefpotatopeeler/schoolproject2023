@@ -1,18 +1,20 @@
 package com.thechiefpotatopeeler.schoolproject2023.display.gui;
 
-import com.sun.jdi.connect.Connector;
 import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -80,27 +82,45 @@ public class UIApplication extends Application {
         HBox bottomMenu = new HBox();
         Button menuButton = new Button("Main menu");
         Button advanceGenerationButton = new Button("Advance 1 Generation");
+        Button advanceMultipleGenerationsButton = new Button("Advance N generations");
+        TextField generationsInput = new TextField();
+        Button clearButton = new Button("Clear the board");
 
         //Adds the actions to the buttons
         menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
+        generationsInput.setText("10");
+
         advanceGenerationButton.setOnAction(e -> {
             BoardHandler.advanceGenerations(1);
             updateCellUI();
         });
+        advanceMultipleGenerationsButton.setOnAction(e -> {
+            try{
+                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()));
+                updateCellUI();
+            } catch(NumberFormatException exception){
+
+            }
+        });
+        clearButton.setOnAction(e ->{
+            BoardHandler.currentBoard.fillBlankBoard(BoardHandler.currentBoard.getWidth(), BoardHandler.currentBoard.getHeight());
+            updateCellUI();
+        });
 
         //Completes and returns the scene
-        bottomMenu.getChildren().addAll(menuButton, advanceGenerationButton);
+        bottomMenu.getChildren().addAll(menuButton, advanceGenerationButton, advanceMultipleGenerationsButton, generationsInput, clearButton);
         BorderPane layout = new BorderPane();
         layout.setCenter(cellGrid);
         layout.setBottom(bottomMenu);
-        return new Scene(layout, 300, 250);
+        return new Scene(layout, BoardHandler.currentBoard.getWidth()*cellUISize, BoardHandler.currentBoard.getHeight()*cellUISize);
     }
 
     /**
      * Initializes the game board
      * */
     public static void initGame() {
-        BoardHandler.currentBoard.fillBlankBoard(10, 10);
+        BoardHandler.currentBoard.fillBlankBoard(50, 50);
+        cellUISize = ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())/50;
 //        BoardHandler.currentBoard.setCell(0, 0, true);
 //        BoardHandler.currentBoard.setCell(1, 0, true);
 //        BoardHandler.currentBoard.setCell(0, 1, true);

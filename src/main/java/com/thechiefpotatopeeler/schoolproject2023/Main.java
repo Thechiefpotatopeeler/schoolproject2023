@@ -1,6 +1,6 @@
 package com.thechiefpotatopeeler.schoolproject2023;
 
-import com.thechiefpotatopeeler.schoolproject2023.display.gui.UIApplication;
+import com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication;
 
 /**
  * The main class of the program
@@ -32,5 +32,6 @@ public class Main {
      * The method that runs the CLI version of the game
      * */
     private static void runCLIApplication(){
+        System.out.println("CLI is deprecated please use GUI");
     }
 }

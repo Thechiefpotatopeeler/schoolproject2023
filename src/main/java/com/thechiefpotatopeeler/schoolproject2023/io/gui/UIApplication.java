@@ -1,4 +1,4 @@
-package com.thechiefpotatopeeler.schoolproject2023.display.gui;
+package com.thechiefpotatopeeler.schoolproject2023.io.gui;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
@@ -10,12 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * The class which handles the GUI (currently running the application when using GUI as well)
@@ -55,7 +53,8 @@ public class UIApplication extends Application {
      * */
     public Scene buildMenuScene(){
         //The basic layout
-        HBox layout = new HBox();
+        HBox buttons = new HBox();
+        HBox textBoxes = new HBox();
 
         //The start button
         Button startButton = new Button("Start");
@@ -65,8 +64,25 @@ public class UIApplication extends Application {
         Button exitButton = new Button("Quit");
         exitButton.setOnAction(e -> Platform.exit());
 
+        //The board dimensions
+        Text xPrompt = new Text();
+        TextField xInput = new TextField();
+        TextField yInput = new TextField();
+        xPrompt.setText("x:");
+        xPrompt.setScaleX(1.5D);
+        xPrompt.setScaleY(1.5D);
+        xInput.setText("50");
+        xInput.setMaxWidth(50);
+        yInput.setText("50");
+        yInput.setMaxWidth(50);
+
         //Adds the buttons to the layout and returns the full scene
-        layout.getChildren().addAll(startButton, exitButton);
+        buttons.getChildren().addAll(startButton, exitButton);
+        textBoxes.getChildren().addAll(xPrompt,xInput,yInput);
+        //textBoxes.setPadding();
+        BorderPane layout = new BorderPane();
+        layout.setTop(buttons);
+        layout.setCenter(textBoxes);
         Scene scene = new Scene(layout, 300, 250);
         return scene;
     }
@@ -99,7 +115,7 @@ public class UIApplication extends Application {
                 BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()));
                 updateCellUI();
             } catch(NumberFormatException exception){
-
+                return;
             }
         });
         clearButton.setOnAction(e ->{

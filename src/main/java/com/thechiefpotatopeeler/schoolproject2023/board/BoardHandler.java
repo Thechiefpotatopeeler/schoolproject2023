@@ -1,11 +1,6 @@
 package com.thechiefpotatopeeler.schoolproject2023.board;
 
-import com.thechiefpotatopeeler.schoolproject2023.display.TextUI;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * The class which handles the game's board

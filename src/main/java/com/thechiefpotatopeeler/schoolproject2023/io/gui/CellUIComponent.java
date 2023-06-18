@@ -1,7 +1,6 @@
-package com.thechiefpotatopeeler.schoolproject2023.display.gui;
+package com.thechiefpotatopeeler.schoolproject2023.io.gui;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
-import javafx.scene.control.Cell;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

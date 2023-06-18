@@ -1,4 +1,4 @@
-package com.thechiefpotatopeeler.schoolproject2023.display;
+package com.thechiefpotatopeeler.schoolproject2023.io;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 

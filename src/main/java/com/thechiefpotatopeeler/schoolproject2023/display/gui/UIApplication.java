@@ -120,7 +120,7 @@ public class UIApplication extends Application {
      * */
     public static void initGame() {
         BoardHandler.currentBoard.fillBlankBoard(50, 50);
-        cellUISize = ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())/50;
+        cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/50;
 //        BoardHandler.currentBoard.setCell(0, 0, true);
 //        BoardHandler.currentBoard.setCell(1, 0, true);
 //        BoardHandler.currentBoard.setCell(0, 1, true);

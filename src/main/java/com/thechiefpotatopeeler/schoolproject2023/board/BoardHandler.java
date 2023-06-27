@@ -44,11 +44,12 @@ public class BoardHandler {
      *
      * @param generations The number of generations to advance
      * */
-    public static void advanceGenerations(int generations){
+    public static void advanceGenerations(int generations, Runnable onAdvance) {
         for(int i=0; i<generations;i++){
             generationCount++;
             //System.out.println(String.format("Generation %s:", generationCount));
             currentBoard.replaceBoard(generateNewGeneration());
+            onAdvance.run();
             //TextUI.printBoard();
         }
     }

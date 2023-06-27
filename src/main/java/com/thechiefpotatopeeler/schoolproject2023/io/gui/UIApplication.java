@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -101,22 +102,22 @@ public class UIApplication extends Application {
         Button advanceMultipleGenerationsButton = new Button("Advance N generations");
         TextField generationsInput = new TextField();
         Button clearButton = new Button("Clear the board");
+        Label displayGenerationsLabel = new Label("Display generations:");
+        CheckBox displayGenerations = new CheckBox();
 
         //Adds the actions to the buttons
         menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
         generationsInput.setText("10");
 
         advanceGenerationButton.setOnAction(e -> {
-            BoardHandler.advanceGenerations(1);
+            BoardHandler.advanceGenerations(1,()->{});
             updateCellUI();
         });
         advanceMultipleGenerationsButton.setOnAction(e -> {
             try{
-                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()));
+                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()), UIApplication::updateCellUI);
                 updateCellUI();
-            } catch(NumberFormatException exception){
-                return;
-            }
+            } catch(NumberFormatException ignored){}
         });
         clearButton.setOnAction(e ->{
             BoardHandler.currentBoard.fillBlankBoard(BoardHandler.currentBoard.getWidth(), BoardHandler.currentBoard.getHeight());

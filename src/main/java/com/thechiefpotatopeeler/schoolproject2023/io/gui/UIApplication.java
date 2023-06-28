@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * The class which handles the GUI (currently running the application when using GUI as well)
  * */
@@ -92,6 +94,7 @@ public class UIApplication extends Application {
      * Initializes the cell grid
      * @return The game scene
      * */
+
     public Scene buildGameScene(){
         initCellGrid();
 
@@ -115,7 +118,12 @@ public class UIApplication extends Application {
         });
         advanceMultipleGenerationsButton.setOnAction(e -> {
             try{
-                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()), UIApplication::updateCellUI);
+                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()), ()->{
+                    try {
+                        sleep(10);
+                    } catch (InterruptedException ignored) {}
+                    updateCellUI();
+                });
                 updateCellUI();
             } catch(NumberFormatException ignored){}
         });
@@ -138,10 +146,6 @@ public class UIApplication extends Application {
     public static void initGame() {
         BoardHandler.currentBoard.fillBlankBoard(50, 50);
         cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/50;
-//        BoardHandler.currentBoard.setCell(0, 0, true);
-//        BoardHandler.currentBoard.setCell(1, 0, true);
-//        BoardHandler.currentBoard.setCell(0, 1, true);
-//        BoardHandler.currentBoard.setCell(1, 1, true);
     }
 
     /**

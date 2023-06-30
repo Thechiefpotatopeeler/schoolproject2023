@@ -1,6 +1,8 @@
 package com.thechiefpotatopeeler.schoolproject2023.io.gui;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,9 +11,8 @@ import javafx.scene.text.Text;
 /**
  * The User interface implementation of a cell
  * */
-public class CellUIComponent  extends StackPane {
+public class CellUIComponent extends StackPane {
     private int cellX, cellY;//The coordinates which correspond to the cell's position on the board
-
     private Rectangle border = new Rectangle(UIApplication.cellUISize, UIApplication.cellUISize);//The border around the cell
     private Text text = new Text();//The text inside the cell
 

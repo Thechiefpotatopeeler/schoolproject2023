@@ -69,6 +69,7 @@ public class UIApplication extends Application {
 
         //The board dimensions
         Text xPrompt = new Text();
+        Text yPrompt = new Text();
         TextField xInput = new TextField();
         TextField yInput = new TextField();
         xPrompt.setText("x:");
@@ -78,16 +79,18 @@ public class UIApplication extends Application {
         xInput.setMaxWidth(50);
         yInput.setText("50");
         yInput.setMaxWidth(50);
+        yPrompt.setText("x:");
+        yPrompt.setScaleX(1.5D);
+        yPrompt.setScaleY(1.5D);
 
         //Adds the buttons to the layout and returns the full scene
         buttons.getChildren().addAll(startButton, exitButton);
-        textBoxes.getChildren().addAll(xPrompt,xInput,yInput);
+        textBoxes.getChildren().addAll(xPrompt,xInput,yPrompt,yInput);
         //textBoxes.setPadding();
         BorderPane layout = new BorderPane();
         layout.setTop(buttons);
         layout.setCenter(textBoxes);
-        Scene scene = new Scene(layout, 300, 250);
-        return scene;
+        return new Scene(layout, 300, 250);
     }
 
     /**
@@ -126,6 +129,8 @@ public class UIApplication extends Application {
                 });
                 updateCellUI();
             } catch(NumberFormatException ignored){}
+
+
         });
         clearButton.setOnAction(e ->{
             BoardHandler.currentBoard.fillBlankBoard(BoardHandler.currentBoard.getWidth(), BoardHandler.currentBoard.getHeight());

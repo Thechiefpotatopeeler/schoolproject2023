@@ -1,6 +1,11 @@
 package com.thechiefpotatopeeler.schoolproject2023.board;
 
+import com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication;
+
 import java.util.ArrayList;
+import java.util.function.Consumer;
+
+import static java.lang.Thread.sleep;
 
 /**
  * The class which handles the game's board
@@ -44,15 +49,14 @@ public class BoardHandler {
      *
      * @param generations The number of generations to advance
      * */
-    public static void advanceGenerations(int generations, Runnable onAdvance) {
-        for(int i=0; i<generations;i++){
+    public static void advanceGenerations(int generations,Runnable onGenerationAdvanced) {
+        for (int i = 0; i < generations; i++) {
             generationCount++;
-            //System.out.println(String.format("Generation %s:", generationCount));
             currentBoard.replaceBoard(generateNewGeneration());
-            onAdvance.run();
-            //TextUI.printBoard();
+            onGenerationAdvanced.run();
         }
     }
+
 
     /**
      *  Returns true if the cell is on the edge of the board

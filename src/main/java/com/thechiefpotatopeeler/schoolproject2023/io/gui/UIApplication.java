@@ -16,8 +16,6 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 
-import static java.lang.Thread.sleep;
-
 /**
  * The class which handles the GUI (currently running the application when using GUI as well)
  * */
@@ -26,9 +24,12 @@ public class UIApplication extends Application {
 
     public Stage window; // The window which the application runs in
 
+    public static Boolean colourBlindMode = false; // Whether or not colour blind mode is enabled
     public static int cellUISize = 30;// The size of the cell UI components
 
     public static Pane cellGrid;// The grid of cells
+
+    public static Thread UIUpdateHandler;
 
     /**
      * The method which runs when the application is started
@@ -41,6 +42,7 @@ public class UIApplication extends Application {
         initGame();
         stage.setScene(this.buildMenuScene());
         stage.show();
+        this.window.setOnCloseRequest(e -> exitProcedures());
     }
 
     /**
@@ -59,13 +61,9 @@ public class UIApplication extends Application {
         HBox buttons = new HBox();
         HBox textBoxes = new HBox();
 
-        //The start button
-        Button startButton = new Button("Start");
-        startButton.setOnAction(e -> enterGame());
-
         //The exit button
         Button exitButton = new Button("Quit");
-        exitButton.setOnAction(e -> Platform.exit());
+        exitButton.setOnAction(e -> exitProcedures());
 
         //The board dimensions
         Text xPrompt = new Text();
@@ -73,18 +71,29 @@ public class UIApplication extends Application {
         TextField xInput = new TextField();
         TextField yInput = new TextField();
         xPrompt.setText("x:");
+        yPrompt.setText("y:");
         xPrompt.setScaleX(1.5D);
         xPrompt.setScaleY(1.5D);
+        yPrompt.setScaleX(1.5D);
+        yPrompt.setScaleY(1.5D);
         xInput.setText("50");
         xInput.setMaxWidth(50);
         yInput.setText("50");
         yInput.setMaxWidth(50);
-        yPrompt.setText("x:");
-        yPrompt.setScaleX(1.5D);
-        yPrompt.setScaleY(1.5D);
+        CheckBox colourBlindModeCheckBox = new CheckBox("Colour blind mode");
+
+        //The start button
+        Button startButton = new Button("Start");
+            startButton.setOnAction(e ->{
+                try{
+                    BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
+                    colourBlindMode = colourBlindModeCheckBox.isSelected();
+                    enterGame();
+                } catch(NumberFormatException ignored){}
+            });
 
         //Adds the buttons to the layout and returns the full scene
-        buttons.getChildren().addAll(startButton, exitButton);
+        buttons.getChildren().addAll(startButton, exitButton, colourBlindModeCheckBox);
         textBoxes.getChildren().addAll(xPrompt,xInput,yPrompt,yInput);
         //textBoxes.setPadding();
         BorderPane layout = new BorderPane();
@@ -99,7 +108,17 @@ public class UIApplication extends Application {
      * */
 
     public Scene buildGameScene(){
+        initGame();
         initCellGrid();
+        UIUpdateHandler = new Thread(() -> {
+            while(true){
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException ignored) {}
+                Platform.runLater(UIApplication::updateCellUI);
+            }
+        });
+        UIUpdateHandler.start();
 
         //Creates the bottom menu buttons
         HBox bottomMenu = new HBox();
@@ -109,32 +128,23 @@ public class UIApplication extends Application {
         TextField generationsInput = new TextField();
         Button clearButton = new Button("Clear the board");
         Label displayGenerationsLabel = new Label("Display generations:");
-        CheckBox displayGenerations = new CheckBox();
-
         //Adds the actions to the buttons
         menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
         generationsInput.setText("10");
 
         advanceGenerationButton.setOnAction(e -> {
             BoardHandler.advanceGenerations(1,()->{});
-            updateCellUI();
+            //updateCellUI();
         });
         advanceMultipleGenerationsButton.setOnAction(e -> {
             try{
-                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()), ()->{
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException ignored) {}
-                    updateCellUI();
-                });
-                updateCellUI();
+                BoardHandler.advanceGenerations(Integer.parseInt(generationsInput.getText()), () -> {});
+                //updateCellUI();
             } catch(NumberFormatException ignored){}
-
-
         });
         clearButton.setOnAction(e ->{
             BoardHandler.currentBoard.fillBlankBoard(BoardHandler.currentBoard.getWidth(), BoardHandler.currentBoard.getHeight());
-            updateCellUI();
+            //updateCellUI();
         });
 
         //Completes and returns the scene
@@ -142,14 +152,14 @@ public class UIApplication extends Application {
         BorderPane layout = new BorderPane();
         layout.setCenter(cellGrid);
         layout.setBottom(bottomMenu);
-        return new Scene(layout, BoardHandler.currentBoard.getWidth()*cellUISize, BoardHandler.currentBoard.getHeight()*cellUISize);
+        return new Scene(layout, BoardHandler.getWidth()*cellUISize, BoardHandler.getHeight()*cellUISize);
     }
 
     /**
      * Initializes the game board
      * */
     public static void initGame() {
-        BoardHandler.currentBoard.fillBlankBoard(50, 50);
+        BoardHandler.currentBoard.fillBlankBoard(BoardHandler.getWidth(), BoardHandler.getHeight());
         cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/50;
     }
 
@@ -173,8 +183,9 @@ public class UIApplication extends Application {
             int x = (int) e.getX() / cellUISize;
             int y = (int) e.getY() / cellUISize;
             BoardHandler.currentBoard.setCell(x, y, !BoardHandler.currentBoard.getCell(x, y));
-            updateCellUI();
+            //updateCellUI();
         });
+        //Main.logger.info("Cell grid initialized");
     }
 
     /**
@@ -185,5 +196,12 @@ public class UIApplication extends Application {
             CellUIComponent cellUI = (CellUIComponent) cellGrid.getChildren().get(i);
             cellUI.updateCell(Boolean.TRUE.equals(BoardHandler.currentBoard.getCell(cellUI.getCellX(), cellUI.getCellY())));
         }
+        //TextUI.printBoard();
+    }
+
+    public static void exitProcedures(){
+        if(UIUpdateHandler!=null) UIUpdateHandler.interrupt();
+        Platform.exit();
+        System.exit(0);
     }
 }

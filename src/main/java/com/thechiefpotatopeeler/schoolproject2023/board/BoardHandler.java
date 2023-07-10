@@ -1,19 +1,15 @@
 package com.thechiefpotatopeeler.schoolproject2023.board;
 
-import com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication;
-
 import java.util.ArrayList;
-import java.util.function.Consumer;
-
-import static java.lang.Thread.sleep;
 
 /**
  * The class which handles the game's board
  * */
-
 public class BoardHandler {
 
     public static Board currentBoard = new Board();
+
+    public static int xSize,ySize;
 
     private static int generationCount=0;
 
@@ -29,7 +25,7 @@ public class BoardHandler {
         for (int i = 0; i < currentBoard.getWidth(); i++) {
             ArrayList<Boolean> newRow = new ArrayList<>();
             for (int j = 0; j < currentBoard.getHeight(); j++) {
-                boolean cell = currentBoard.getCell(j,i);
+                boolean cell = Boolean.TRUE.equals(currentBoard.getCell(j, i));
                 int adjacentCells = currentBoard.countLivingCellNeighbours(j, i);
                 if (cell && (adjacentCells < 2 || adjacentCells > 3)) {
                     newRow.add(false);
@@ -48,11 +44,13 @@ public class BoardHandler {
      *  Method that advances the board a certain number of generations.
      *
      * @param generations The number of generations to advance
+     * @param onGenerationAdvanced The method to run after each generation is advanced (currently unused but left in for future use or other implementations)
      * */
     public static void advanceGenerations(int generations,Runnable onGenerationAdvanced) {
         for (int i = 0; i < generations; i++) {
             generationCount++;
-            currentBoard.replaceBoard(generateNewGeneration());
+            ArrayList<ArrayList<Boolean>> newBoard = generateNewGeneration();
+            currentBoard.replaceBoard(newBoard);
             onGenerationAdvanced.run();
         }
     }
@@ -87,6 +85,27 @@ public class BoardHandler {
         return currentBoard;
     }
 
+    /*
+    * Generic methods for setting and getting the size of the board
+    * */
+    public static void setSize(int x, int y) {
+    	xSize = x;
+    	ySize = y;
+    }
 
+    public static void setXSize(int x) {
+    	xSize = x;
+    }
 
+    public static void setYSize(int y) {
+    	ySize = y;
+    }
+
+    public static int getWidth() {
+    	return xSize;
+    }
+
+    public static int getHeight() {
+    	return ySize;
+    }
 }

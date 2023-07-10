@@ -1,11 +1,15 @@
 package com.thechiefpotatopeeler.schoolproject2023;
 
 import com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The main class of the program
  * */
 public class Main {
+
+    public static Logger logger = LogManager.getLogger("Game of life");
 
     /**
      * The main method of the program

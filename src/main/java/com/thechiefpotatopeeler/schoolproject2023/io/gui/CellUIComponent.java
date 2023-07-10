@@ -24,6 +24,7 @@ public class CellUIComponent extends StackPane {
     public CellUIComponent(int cellX, int cellY) {
         this.cellX = cellX;
         this.cellY = cellY;
+        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? "O" : "X");
 
         //text.setText("O");
         border.setStroke(javafx.scene.paint.Color.BLACK);
@@ -39,6 +40,7 @@ public class CellUIComponent extends StackPane {
      * @param cell The boolean state of the cell
      * */
     public void updateCell(boolean cell) {
+        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? "O" : "X");
         if (cell) {
             border.setFill(Color.INDIANRED);
         } else {

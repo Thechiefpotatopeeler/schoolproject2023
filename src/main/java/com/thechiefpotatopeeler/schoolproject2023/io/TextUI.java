@@ -1,8 +1,11 @@
 package com.thechiefpotatopeeler.schoolproject2023.io;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
+import com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication;
 
 import java.util.ArrayList;
+
+import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 
 /**
  * Class that handles the UI in text mode.
@@ -17,7 +20,7 @@ public class TextUI {
      * */
     @Deprecated
     public static void printBoard(){
-        for (ArrayList<Boolean> row : BoardHandler.getBoard().getBoard()) {
+        for (ArrayList<Boolean> row : BoardHandler.currentBoard.getBoard()) {
             for (Boolean value : row) {
                 System.out.print(value ? "X" : ".");
                 System.out.print(" ");

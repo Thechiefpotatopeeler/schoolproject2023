@@ -13,22 +13,15 @@ public class Main {
 
     /**
      * The main method of the program
-     *
      * @param args The arguments passed to the program
      * */
     public static void main(String[] args) {
         //Launches the game in its appropriate version depending on the arguments passed
         try{
-            switch(args[0].toLowerCase()){
-                case "gui":
-                    UIApplication.launch(UIApplication.class, args);
-                    break;
-                case "cli":
-                    runCLIApplication();
-                    break;
-                default:
-                    System.out.println("Please add argument gui or cli");
-                    break;
+            switch (args[0].toLowerCase()) {
+                case "gui" -> UIApplication.launch(UIApplication.class, args);
+                case "cli" -> runCLIApplication();
+                default -> System.out.println("Please add argument gui or cli");
             }
         } catch(ArrayIndexOutOfBoundsException e){
             System.out.println("Please add argument gui or cli");

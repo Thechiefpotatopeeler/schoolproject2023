@@ -66,8 +66,7 @@ public class BoardHandler {
      * @param dimY Y dimension of cell
      * */
     public static boolean isEdgeCell(int dimX, int dimY){
-        if(dimY==currentBoard.size()||dimY==0||dimX==0||dimY==currentBoard.get(dimX).size()) return true;
-        else return false;
+        return dimY == currentBoard.size() || dimY == 0 || dimX == 0 || dimY == currentBoard.get(dimX).size();
     }
     /**
      * Method that returns the number of living neighbouring cells

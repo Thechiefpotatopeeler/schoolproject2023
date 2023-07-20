@@ -4,10 +4,13 @@ import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -61,6 +64,9 @@ public class UIApplication extends Application {
         HBox buttons = new HBox();
         HBox textBoxes = new HBox();
 
+        textBoxes.setPadding(new Insets(3.0D));
+        textBoxes.setSpacing(3.0D);
+
         //The exit button
         Button exitButton = new Button("Quit");
         exitButton.setOnAction(e -> exitProcedures());
@@ -70,8 +76,8 @@ public class UIApplication extends Application {
         Text yPrompt = new Text();
         TextField xInput = new TextField();
         TextField yInput = new TextField();
-        xPrompt.setText("x:");
-        yPrompt.setText("y:");
+        xPrompt.setText("x: ");
+        yPrompt.setText("y: ");
         xPrompt.setScaleX(1.5D);
         xPrompt.setScaleY(1.5D);
         yPrompt.setScaleX(1.5D);
@@ -106,6 +112,7 @@ public class UIApplication extends Application {
      * Initializes the cell grid
      * @return The game scene
      * */
+
 
     public Scene buildGameScene(){
         initGame();

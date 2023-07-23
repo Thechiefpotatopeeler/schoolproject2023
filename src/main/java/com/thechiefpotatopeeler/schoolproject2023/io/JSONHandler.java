@@ -6,6 +6,11 @@ import org.json.simple.parser.JSONParser;
 
 import java.text.ParseException;
 
+/**
+ * @author Thomas Jackson
+ *
+ * The class that loads boards into JSON
+ * */
 public class JSONHandler {
 
     public void loadBoard(JSONParser parser) throws ParseException {

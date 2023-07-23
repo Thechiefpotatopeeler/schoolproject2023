@@ -9,9 +9,19 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
+ * @author Thomas Jackson
+ *
  * The User interface implementation of a cell
  * */
 public class CellUIComponent extends StackPane {
+
+    public static final Color DEAD_COLOUR = Color.DARKGREY;
+
+    public static final Color ALIVE_COLOUR = Color.INDIANRED;
+
+    public static final String ALIVE_TEXT = "X";
+
+    public static final String DEAD_TEXT = "";
     private int cellX, cellY;//The coordinates which correspond to the cell's position on the board
     private Rectangle border = new Rectangle(UIApplication.cellUISize, UIApplication.cellUISize);//The border around the cell
     private Text text = new Text();//The text inside the cell
@@ -24,11 +34,11 @@ public class CellUIComponent extends StackPane {
     public CellUIComponent(int cellX, int cellY) {
         this.cellX = cellX;
         this.cellY = cellY;
-        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? "X" : "");
 
         //text.setText("O");
         border.setStroke(javafx.scene.paint.Color.BLACK);
-        border.setFill(BoardHandler.currentBoard.getCell(cellX, cellY) ? Color.INDIANRED : javafx.scene.paint.Color.DARKGREY);
+        border.setFill(BoardHandler.currentBoard.getCell(cellX, cellY) ? ALIVE_COLOUR : DEAD_COLOUR);
+        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? ALIVE_TEXT : DEAD_TEXT);
 
         getChildren().addAll(border, text);
 
@@ -40,11 +50,11 @@ public class CellUIComponent extends StackPane {
      * @param cell The boolean state of the cell
      * */
     public void updateCell(boolean cell) {
-        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? "X" : "");
+        if(UIApplication.colourBlindMode) this.text.setText(BoardHandler.currentBoard.getCell(cellX, cellY) ? ALIVE_TEXT : DEAD_TEXT);
         if (cell) {
-            border.setFill(Color.INDIANRED);
+            border.setFill(ALIVE_COLOUR);
         } else {
-            border.setFill(javafx.scene.paint.Color.DARKGREY);
+            border.setFill(DEAD_COLOUR);
         }
     }
 

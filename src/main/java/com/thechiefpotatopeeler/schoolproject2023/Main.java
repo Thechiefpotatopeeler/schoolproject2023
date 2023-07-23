@@ -5,11 +5,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * @author Thomas Jackson
+ *
  * The main class of the program
+ * Most of the actual code is at {@link com.thechiefpotatopeeler.schoolproject2023.io.gui.UIApplication} and {@link com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler}
  * */
 public class Main {
 
     public static Logger logger = LogManager.getLogger("Game of life");
+
+    public static final String INCORRECT_ARGUMENT_RESPONSE = "Please append with argument gui or cli";
 
     /**
      * The main method of the program
@@ -21,10 +26,10 @@ public class Main {
             switch (args[0].toLowerCase()) {
                 case "gui" -> UIApplication.launch(UIApplication.class, args);
                 case "cli" -> runCLIApplication();
-                default -> System.out.println("Please add argument gui or cli");
+                default -> System.out.println(INCORRECT_ARGUMENT_RESPONSE);
             }
         } catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("Please add argument gui or cli");
+            System.out.println(INCORRECT_ARGUMENT_RESPONSE);
         }
     }
 

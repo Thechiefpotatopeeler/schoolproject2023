@@ -5,6 +5,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Thomas Jackson
+ *
+ * The board class which is used for handling the game data
+ * */
 public class Board extends ArrayList<ArrayList<Boolean>>{
 
     private ArrayList<ArrayList<Boolean>> board;//The nested arrayLists which contain the cell data

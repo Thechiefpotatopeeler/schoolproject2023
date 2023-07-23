@@ -5,12 +5,10 @@ import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -20,10 +18,21 @@ import javafx.stage.Stage;
 import java.awt.*;
 
 /**
+ * @author Thomas Jackson
+ *
  * The class which handles the GUI (currently running the application when using GUI as well)
  * */
 @SuppressWarnings("unnamed module")
 public class UIApplication extends Application {
+
+    private static final String MAIN_MENU_LABEL = "Main menu";
+    private static final String QUIT_LABEL = "Quit";
+    private static final String COLOURBLIND_LABEL = "Colour blind mode";
+    private static final String GAME_TITLE = "Conway's Game of Life";
+    private static final String START_LABEL = "Start";
+    private static final int UPDATE_HANDLER_SLEEP_TIME = 5;
+    private static final String ADVANCE_ONE_LABEL = "Advance 1 generation";
+    private static final String ADVANCE_MULTIPLE_LABEL = "Advance N generations";
 
     public Stage window; // The window which the application runs in
 
@@ -33,6 +42,7 @@ public class UIApplication extends Application {
     public static Pane cellGrid;// The grid of cells
 
     public static Thread UIUpdateHandler;
+    private static final String CLEAR_LABEl = "Clear the board";
 
     /**
      * The method which runs when the application is started
@@ -41,7 +51,7 @@ public class UIApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         window = stage;
-        stage.setTitle("Conway's Game of Life");
+        stage.setTitle(GAME_TITLE);
         initGame();
         stage.setScene(this.buildMenuScene());
         stage.show();
@@ -68,7 +78,7 @@ public class UIApplication extends Application {
         textBoxes.setSpacing(3.0D);
 
         //The exit button
-        Button exitButton = new Button("Quit");
+        Button exitButton = new Button(QUIT_LABEL);
         exitButton.setOnAction(e -> exitProcedures());
 
         //The board dimensions
@@ -86,10 +96,10 @@ public class UIApplication extends Application {
         xInput.setMaxWidth(50);
         yInput.setText("50");
         yInput.setMaxWidth(50);
-        CheckBox colourBlindModeCheckBox = new CheckBox("Colour blind mode");
+        CheckBox colourBlindModeCheckBox = new CheckBox(COLOURBLIND_LABEL);
 
         //The start button
-        Button startButton = new Button("Start");
+        Button startButton = new Button(START_LABEL);
             startButton.setOnAction(e ->{
                 try{
                     BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
@@ -112,15 +122,13 @@ public class UIApplication extends Application {
      * Initializes the cell grid
      * @return The game scene
      * */
-
-
     public Scene buildGameScene(){
         initGame();
         initCellGrid();
         UIUpdateHandler = new Thread(() -> {
             while(true){
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(UPDATE_HANDLER_SLEEP_TIME);
                 } catch (InterruptedException ignored) {}
                 Platform.runLater(UIApplication::updateCellUI);
             }
@@ -129,16 +137,16 @@ public class UIApplication extends Application {
 
         //Creates the bottom menu buttons
         HBox bottomMenu = new HBox();
-        Button menuButton = new Button("Main menu");
-        Button advanceGenerationButton = new Button("Advance 1 Generation");
-        Button advanceMultipleGenerationsButton = new Button("Advance N generations");
+        Button menuButton = new Button(MAIN_MENU_LABEL);
+        Button advanceGenerationButton = new Button(ADVANCE_ONE_LABEL);
+        Button advanceMultipleGenerationsButton = new Button(ADVANCE_MULTIPLE_LABEL);
         TextField generationsInput = new TextField();
-        Button clearButton = new Button("Clear the board");
-        Label displayGenerationsLabel = new Label("Display generations:");
+        Button clearButton = new Button(CLEAR_LABEl);
         //Adds the actions to the buttons
         menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
         generationsInput.setText("10");
 
+        //Adds functionality to buttons
         advanceGenerationButton.setOnAction(e -> {
             BoardHandler.advanceGenerations(1,()->{});
             //updateCellUI();
@@ -206,6 +214,9 @@ public class UIApplication extends Application {
         //TextUI.printBoard();
     }
 
+    /**
+     * Procedures for closing the program
+     * */
     public static void exitProcedures(){
         if(UIUpdateHandler!=null) UIUpdateHandler.interrupt();
         Platform.exit();

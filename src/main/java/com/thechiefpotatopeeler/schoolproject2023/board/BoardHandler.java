@@ -3,6 +3,8 @@ package com.thechiefpotatopeeler.schoolproject2023.board;
 import java.util.ArrayList;
 
 /**
+ * @author Thomas Jackson
+ *
  * The class which handles the game's board
  * */
 public class BoardHandler {
@@ -18,7 +20,7 @@ public class BoardHandler {
     /**
      *  The method that actually generates a new generation
      *
-     * @Return An ArrayList<> of ArrayList<>s of Booleans
+     * @return An ArrayList<> of ArrayList<>s of Booleans
      * */
     public static ArrayList<ArrayList<Boolean>> generateNewGeneration() {
         ArrayList<ArrayList<Boolean>> newBoard = new ArrayList<>();
@@ -87,23 +89,43 @@ public class BoardHandler {
     /*
     * Generic methods for setting and getting the size of the board
     * */
+
+    /**
+     * Sets the size of the board
+     * */
     public static void setSize(int x, int y) {
     	xSize = x;
     	ySize = y;
     }
 
+    /**
+     * Sets the x dimension of the board
+     * @param x the value for x
+     * */
     public static void setXSize(int x) {
     	xSize = x;
     }
 
+    /**
+     * Sets the y dimension of the board
+     * @param y the value for y
+     * */
     public static void setYSize(int y) {
     	ySize = y;
     }
 
+    /**
+     * Gets the width of the board
+     * @return the width
+     * */
     public static int getWidth() {
     	return xSize;
     }
 
+    /**
+     * Gets the height of the board
+     * @return the height
+     * */
     public static int getHeight() {
     	return ySize;
     }

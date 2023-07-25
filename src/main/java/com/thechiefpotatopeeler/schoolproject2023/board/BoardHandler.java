@@ -22,13 +22,17 @@ public class BoardHandler {
      *
      * @return An ArrayList<> of ArrayList<>s of Booleans
      * */
-    public static ArrayList<ArrayList<Boolean>> generateNewGeneration() {
-        ArrayList<ArrayList<Boolean>> newBoard = new ArrayList<>();
+    public static Board generateNewGeneration() {
+        ArrayList<ArrayList<Boolean>> newColumn = new ArrayList<>();
+        //Recurse through the board
         for (int i = 0; i < currentBoard.getWidth(); i++) {
             ArrayList<Boolean> newRow = new ArrayList<>();
             for (int j = 0; j < currentBoard.getHeight(); j++) {
+
                 boolean cell = Boolean.TRUE.equals(currentBoard.getCell(j, i));
                 int adjacentCells = currentBoard.countLivingCellNeighbours(j, i);
+                //Applies the rules of the game
+
                 if (cell && (adjacentCells < 2 || adjacentCells > 3)) {
                     newRow.add(false);
                 } else if (!cell && adjacentCells == 3) {
@@ -37,8 +41,9 @@ public class BoardHandler {
                     newRow.add(cell);
                 }
             }
-            newBoard.add(newRow);
+            newColumn.add(newRow);
         }
+        Board newBoard = new Board(newColumn);
         return newBoard;
     }
 
@@ -51,8 +56,9 @@ public class BoardHandler {
     public static void advanceGenerations(int generations,Runnable onGenerationAdvanced) {
         for (int i = 0; i < generations; i++) {
             generationCount++;
-            ArrayList<ArrayList<Boolean>> newBoard = generateNewGeneration();
-            currentBoard.replaceBoard(newBoard);
+//            ArrayList<ArrayList<Boolean>> newBoard = generateNewGeneration();
+//            currentBoard.replaceBoard(newBoard);
+            currentBoard = generateNewGeneration();
             onGenerationAdvanced.run();
         }
     }

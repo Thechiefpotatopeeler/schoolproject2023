@@ -14,6 +14,11 @@ public class Board extends ArrayList<ArrayList<Boolean>>{
 
     private ArrayList<ArrayList<Boolean>> board;//The nested arrayLists which contain the cell data
 
+    public Board(){}
+    public Board(ArrayList<ArrayList<Boolean>> board){
+        this.replaceBoard(board);
+    }
+
     /**
      * This function generates the board according to provided dimensions and fills it with blank cells
      *

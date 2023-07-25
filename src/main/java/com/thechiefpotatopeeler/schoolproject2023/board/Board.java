@@ -10,11 +10,13 @@ import java.util.Collections;
  *
  * The board class which is used for handling the game data
  * */
-public class Board extends ArrayList<ArrayList<Boolean>>{
+public class Board {
 
     private ArrayList<ArrayList<Boolean>> board;//The nested arrayLists which contain the cell data
 
-    public Board(){}
+    public Board(){
+        super();
+    }
     public Board(ArrayList<ArrayList<Boolean>> board){
         this.replaceBoard(board);
     }

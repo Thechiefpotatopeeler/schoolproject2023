@@ -2,6 +2,7 @@ package com.thechiefpotatopeeler.schoolproject2023.io.gui;
 
 import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
+import com.thechiefpotatopeeler.schoolproject2023.io.JSONHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -15,10 +16,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Thomas Jackson
@@ -46,6 +55,7 @@ public class UIApplication extends Application {
 
     public static Thread UIUpdateHandler;
     private static final String CLEAR_LABEl = "Clear the board";
+    public static FileChooser fileChooser = new FileChooser();
 
     public enum UIState{
         MENU(0){
@@ -162,11 +172,13 @@ public class UIApplication extends Application {
         });
         UIUpdateHandler.start();
 
-        //Creates the bottom menu buttons
+        //Creates the menu components
         HBox bottomMenu = new HBox();
         Button menuButton = new Button(MAIN_MENU_LABEL);
         Button advanceGenerationButton = new Button(ADVANCE_ONE_LABEL);
         Button advanceMultipleGenerationsButton = new Button(ADVANCE_MULTIPLE_LABEL);
+        Button saveBoardButton = new Button("Save board");
+        Button loadBoardButton = new Button("Load board");
         TextField generationsInput = new TextField();
         Button clearButton = new Button(CLEAR_LABEl);
         //Adds the actions to the buttons
@@ -192,8 +204,33 @@ public class UIApplication extends Application {
             //updateCellUI();
         });
 
+        saveBoardButton.setOnAction(e ->{
+            fileChooser.setTitle("Save board");
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON file", "*.json"));
+            fileChooser.setInitialFileName("board.json");
+            File file = fileChooser.showSaveDialog(window);
+            try {
+                FileWriter dataStream = new FileWriter(file);
+                dataStream.write(new JSONHandler().exportBoard(BoardHandler.currentBoard).toJSONString());
+                dataStream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        loadBoardButton.setOnAction(e ->{
+            fileChooser.setTitle("Load board");
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON file", "*.json"));
+            File file = fileChooser.showOpenDialog(window);
+            try {
+                BoardHandler.currentBoard = new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+            } catch (IOException | ParseException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         //Completes and returns the scene
-        bottomMenu.getChildren().addAll(menuButton, advanceGenerationButton, advanceMultipleGenerationsButton, generationsInput, clearButton);
+        bottomMenu.getChildren().addAll(menuButton, advanceGenerationButton, advanceMultipleGenerationsButton, generationsInput, clearButton, saveBoardButton, loadBoardButton);
         BorderPane layout = new BorderPane();
         layout.setCenter(cellGrid);
         layout.setBottom(bottomMenu);

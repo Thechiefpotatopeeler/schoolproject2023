@@ -4,11 +4,13 @@ import com.thechiefpotatopeeler.schoolproject2023.board.Board;
 import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -16,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * @author Thomas Jackson
@@ -25,6 +28,7 @@ import java.awt.*;
 @SuppressWarnings("unnamed module")
 public class UIApplication extends Application {
 
+    //Labels and other constants
     private static final String MAIN_MENU_LABEL = "Main menu";
     private static final String QUIT_LABEL = "Quit";
     private static final String COLOURBLIND_LABEL = "Colour blind mode";
@@ -34,15 +38,40 @@ public class UIApplication extends Application {
     private static final String ADVANCE_ONE_LABEL = "Advance 1 generation";
     private static final String ADVANCE_MULTIPLE_LABEL = "Advance N generations";
 
-    public Stage window; // The window which the application runs in
-
-    public static Boolean colourBlindMode = false; // Whether or not colour blind mode is enabled
-    public static int cellUISize = 30;// The size of the cell UI components
-
-    public static Pane cellGrid;// The grid of cells
+    //Functional variables
+    public static Stage window;
+    public static Boolean colourBlindMode = false;
+    public static int cellUISize = 30;
+    public static Pane cellGrid;
 
     public static Thread UIUpdateHandler;
     private static final String CLEAR_LABEl = "Clear the board";
+
+    public enum UIState{
+        MENU(0){
+            @Override
+            public Scene getSceneFromState() {
+                if(UIUpdateHandler != null) UIUpdateHandler.interrupt();
+                return buildMenuScene();
+            }
+        },
+        GAME(1){
+            @Override
+            public Scene getSceneFromState() {
+                return buildGameScene();
+            }
+        };
+
+        UIState(int state) {
+
+        }
+
+        public Scene getSceneFromState(){
+            return null;
+        }
+    }
+
+    public static UIState uiState = UIState.MENU;
 
     /**
      * The method which runs when the application is started
@@ -53,7 +82,7 @@ public class UIApplication extends Application {
         window = stage;
         stage.setTitle(GAME_TITLE);
         initGame();
-        stage.setScene(this.buildMenuScene());
+        stage.setScene(this.uiState.getSceneFromState());
         stage.show();
         this.window.setOnCloseRequest(e -> exitProcedures());
     }
@@ -61,15 +90,12 @@ public class UIApplication extends Application {
     /**
      * The switches the scene to the game scene
      * */
-    public void enterGame() {
-        window.setScene(this.buildGameScene());
-    }
 
     /**
      * Builds the scene for the menu
      * @return The menu scene
      * */
-    public Scene buildMenuScene(){
+    public static Scene buildMenuScene(){
         //The basic layout
         HBox buttons = new HBox();
         HBox textBoxes = new HBox();
@@ -104,7 +130,8 @@ public class UIApplication extends Application {
                 try{
                     BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
                     colourBlindMode = colourBlindModeCheckBox.isSelected();
-                    enterGame();
+                    UIApplication.uiState = UIState.GAME;
+                    window.setScene(UIApplication.uiState.getSceneFromState());
                 } catch(NumberFormatException ignored){}
             });
 
@@ -122,7 +149,7 @@ public class UIApplication extends Application {
      * Initializes the cell grid
      * @return The game scene
      * */
-    public Scene buildGameScene(){
+    public static Scene buildGameScene(){
         initGame();
         initCellGrid();
         UIUpdateHandler = new Thread(() -> {
@@ -143,7 +170,10 @@ public class UIApplication extends Application {
         TextField generationsInput = new TextField();
         Button clearButton = new Button(CLEAR_LABEl);
         //Adds the actions to the buttons
-        menuButton.setOnAction(e -> window.setScene(buildMenuScene()));
+        menuButton.setOnAction(e ->{
+            UIApplication.uiState = UIState.MENU;
+            window.setScene(buildMenuScene());
+        });
         generationsInput.setText("10");
 
         //Adds functionality to buttons
@@ -193,13 +223,17 @@ public class UIApplication extends Application {
                 cellGrid.getChildren().add(cellUI);
             }
         }
+        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                int x = (int) event.getX() / cellUISize;
+                int y = (int) event.getY() / cellUISize;
+                BoardHandler.currentBoard.setCell(x, y, !BoardHandler.currentBoard.getCell(x, y));
+            }
+        };
         //Adds the action to the cell grid
-        cellGrid.setOnMouseClicked(e -> {
-            int x = (int) e.getX() / cellUISize;
-            int y = (int) e.getY() / cellUISize;
-            BoardHandler.currentBoard.setCell(x, y, !BoardHandler.currentBoard.getCell(x, y));
-            //updateCellUI();
-        });
+        cellGrid.setOnMouseClicked(mouseHandler);
+        cellGrid.setOnMouseDragged(mouseHandler);
         //Main.logger.info("Cell grid initialized");
     }
 

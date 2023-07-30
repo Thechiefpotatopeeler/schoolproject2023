@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * */
 public class JSONHandler {
 
-    public Board loadBoard(String board) throws ParseException {
+    public Board loadBoard(String board) throws ParseException, ClassCastException {
         JSONParser parser = new JSONParser();
         JSONObject boardJSON = (JSONObject) parser.parse(board);
         JSONArray rows = (JSONArray) boardJSON.get("board");

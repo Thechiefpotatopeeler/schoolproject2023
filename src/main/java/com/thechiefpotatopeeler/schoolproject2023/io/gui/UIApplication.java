@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -19,12 +20,10 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,6 +45,12 @@ public class UIApplication extends Application {
     private static final int UPDATE_HANDLER_SLEEP_TIME = 5;
     private static final String ADVANCE_ONE_LABEL = "Advance 1 generation";
     private static final String ADVANCE_MULTIPLE_LABEL = "Advance N generations";
+    private static final String SAVE_LABEL = "Save board";
+    private static final String LOAD_LABEL = "Load board";
+    private static final String DEFAULT_JSON_FILE_NAME = "board.json";
+    private static final String BOARD_LOAD_ERROR_HEADER = "Loading board";
+    private static final String JSON_FILE_FILTER_TAG = "The file you selected is not a valid board file";
+    private static final String JSON_FILE_FILTER = "*.json";
 
     //Functional variables
     public static Stage window;
@@ -177,8 +182,8 @@ public class UIApplication extends Application {
         Button menuButton = new Button(MAIN_MENU_LABEL);
         Button advanceGenerationButton = new Button(ADVANCE_ONE_LABEL);
         Button advanceMultipleGenerationsButton = new Button(ADVANCE_MULTIPLE_LABEL);
-        Button saveBoardButton = new Button("Save board");
-        Button loadBoardButton = new Button("Load board");
+        Button saveBoardButton = new Button(SAVE_LABEL);
+        Button loadBoardButton = new Button(LOAD_LABEL);
         TextField generationsInput = new TextField();
         Button clearButton = new Button(CLEAR_LABEl);
         //Adds the actions to the buttons
@@ -205,26 +210,32 @@ public class UIApplication extends Application {
         });
 
         saveBoardButton.setOnAction(e ->{
-            fileChooser.setTitle("Save board");
-            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON file", "*.json"));
-            fileChooser.setInitialFileName("board.json");
+            fileChooser.setTitle(SAVE_LABEL);
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(JSON_FILE_FILTER_TAG, JSON_FILE_FILTER));
+            fileChooser.setInitialFileName(DEFAULT_JSON_FILE_NAME);
             File file = fileChooser.showSaveDialog(window);
             try {
-                FileWriter dataStream = new FileWriter(file);
-                dataStream.write(new JSONHandler().exportBoard(BoardHandler.currentBoard).toJSONString());
-                dataStream.close();
+                FileUtils.writeStringToFile(file, new JSONHandler().exportBoard(BoardHandler.currentBoard).toString(), StandardCharsets.UTF_8);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
         loadBoardButton.setOnAction(e ->{
-            fileChooser.setTitle("Load board");
-            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON file", "*.json"));
+            //Sets up to load the board
+            fileChooser.setTitle(LOAD_LABEL);
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(JSON_FILE_FILTER_TAG, JSON_FILE_FILTER));
             File file = fileChooser.showOpenDialog(window);
             try {
                 BoardHandler.currentBoard = new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-            } catch (IOException | ParseException ex) {
+            } catch (IOException | ParseException | ClassCastException ex) {
+                if(ex instanceof ClassCastException){//Handles the case where the file is not a valid board file
+                    showErrorPopup(BOARD_LOAD_ERROR_HEADER,"The file you selected is not a valid board file");
+                } else if(ex instanceof IOException){//Handles the case where the file cannot be read
+                    showErrorPopup(BOARD_LOAD_ERROR_HEADER,"The file you selected could not be read");
+                } else {//Handles the case where the file is not valid JSON
+                    showErrorPopup(BOARD_LOAD_ERROR_HEADER,"The file you selected contains invalid JSON");
+                }
                 throw new RuntimeException(ex);
             }
         });
@@ -235,6 +246,21 @@ public class UIApplication extends Application {
         layout.setCenter(cellGrid);
         layout.setBottom(bottomMenu);
         return new Scene(layout, BoardHandler.getWidth()*cellUISize, BoardHandler.getHeight()*cellUISize);
+    }
+
+    /**
+     * Builds an error window
+     * @param actionFailed The action that failed, the string is appended onto "Error"
+     *                     e.g. "Error saving board"
+     * @param content The content of the error message
+     *                e.g. "The file you selected could not be read"
+     * */
+    public static void showErrorPopup(String actionFailed, String content){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(String.format("Error %s", actionFailed));
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     /**

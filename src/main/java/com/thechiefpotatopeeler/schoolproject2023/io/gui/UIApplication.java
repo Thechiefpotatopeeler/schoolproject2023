@@ -62,11 +62,13 @@ public class UIApplication extends Application {
     private static final String CLEAR_LABEl = "Clear the board";
     public static FileChooser fileChooser = new FileChooser();
 
+    /**
+     * Enum for the state of the UI
+     * */
     public enum UIState{
         MENU(0){
             @Override
             public Scene getSceneFromState() {
-                if(UIUpdateHandler != null) UIUpdateHandler.interrupt();
                 return buildMenuScene();
             }
         },
@@ -97,9 +99,10 @@ public class UIApplication extends Application {
         window = stage;
         stage.setTitle(GAME_TITLE);
         initGame();
-        stage.setScene(this.uiState.getSceneFromState());
+        uiState = UIState.MENU;
+        stage.setScene(uiState.getSceneFromState());
         stage.show();
-        this.window.setOnCloseRequest(e -> exitProcedures());
+        window.setOnCloseRequest(e -> exitProcedures());
     }
 
     /**
@@ -168,7 +171,7 @@ public class UIApplication extends Application {
         initGame();
         initCellGrid();
         UIUpdateHandler = new Thread(() -> {
-            while(true){
+            while(UIApplication.uiState.equals(UIState.GAME)){
                 try {
                     Thread.sleep(UPDATE_HANDLER_SLEEP_TIME);
                 } catch (InterruptedException ignored) {}
@@ -189,7 +192,7 @@ public class UIApplication extends Application {
         //Adds the actions to the buttons
         menuButton.setOnAction(e ->{
             UIApplication.uiState = UIState.MENU;
-            window.setScene(buildMenuScene());
+            window.setScene(uiState.getSceneFromState());
         });
         generationsInput.setText("10");
 

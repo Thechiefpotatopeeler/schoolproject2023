@@ -1,12 +1,16 @@
 package com.thechiefpotatopeeler.schoolproject2023.io;
 
+import com.sun.javafx.collections.MappingChange;
 import com.thechiefpotatopeeler.schoolproject2023.board.Board;
+import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Thomas Jackson
@@ -15,10 +19,11 @@ import java.util.ArrayList;
  * */
 public class JSONHandler {
 
+    public static final String BOARD_TAG = "board";
     public Board loadBoard(String board) throws ParseException, ClassCastException {
         JSONParser parser = new JSONParser();
         JSONObject boardJSON = (JSONObject) parser.parse(board);
-        JSONArray rows = (JSONArray) boardJSON.get("board");
+        JSONArray rows = (JSONArray) boardJSON.get(BOARD_TAG);
         ArrayList<ArrayList<Boolean>> boardArray = new ArrayList<>();
         for(Object row : rows){
             JSONArray rowArray = (JSONArray) row;
@@ -41,7 +46,7 @@ public class JSONHandler {
             }
             rows.add(row);
         }
-        boardJSON.put("board", rows);
+        boardJSON.put(BOARD_TAG, rows);
 
         return boardJSON;
     }

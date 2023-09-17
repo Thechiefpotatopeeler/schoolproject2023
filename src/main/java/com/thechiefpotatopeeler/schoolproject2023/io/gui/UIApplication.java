@@ -98,7 +98,6 @@ public class UIApplication extends Application {
     public void start(Stage stage) throws Exception {
         window = stage;
         stage.setTitle(GAME_TITLE);
-        initGame();
         uiState = UIState.MENU;
         stage.setScene(uiState.getSceneFromState());
         stage.show();
@@ -144,14 +143,14 @@ public class UIApplication extends Application {
 
         //The start button
         Button startButton = new Button(START_LABEL);
-            startButton.setOnAction(e ->{
-                try{
-                    BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
-                    colourBlindMode = colourBlindModeCheckBox.isSelected();
-                    UIApplication.uiState = UIState.GAME;
-                    window.setScene(UIApplication.uiState.getSceneFromState());
-                } catch(NumberFormatException ignored){}
-            });
+        startButton.setOnAction(e ->{
+            try{
+                BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
+                colourBlindMode = colourBlindModeCheckBox.isSelected();
+                UIApplication.uiState = UIState.GAME;
+                window.setScene(UIApplication.uiState.getSceneFromState());
+            } catch(NumberFormatException ignored){}
+        });
 
         //Adds the buttons to the layout and returns the full scene
         buttons.getChildren().addAll(startButton, exitButton, colourBlindModeCheckBox);
@@ -230,6 +229,7 @@ public class UIApplication extends Application {
             fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(JSON_FILE_FILTER_TAG, JSON_FILE_FILTER));
             File file = fileChooser.showOpenDialog(window);
             try {
+                Board board =  new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
                 BoardHandler.currentBoard = new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
             } catch (IOException | ParseException | ClassCastException ex) {
                 if(ex instanceof ClassCastException){//Handles the case where the file is not a valid board file
@@ -267,11 +267,11 @@ public class UIApplication extends Application {
     }
 
     /**
-     * Initializes the game board
+     * Calculates the dimensions of cellUIComponents
      * */
     public static void initGame() {
-        BoardHandler.currentBoard.fillBlankBoard(BoardHandler.getWidth(), BoardHandler.getHeight());
-        cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/50;
+        BoardHandler.currentBoard.fillBlankBoard(BoardHandler.getWidth(), BoardHandler.ySize);
+        cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/BoardHandler.currentBoard.getWidth();
     }
 
     /**

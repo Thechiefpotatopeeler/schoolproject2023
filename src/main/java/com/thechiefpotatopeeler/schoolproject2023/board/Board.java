@@ -15,7 +15,6 @@ public class Board {
     private ArrayList<ArrayList<Boolean>> board;//The nested arrayLists which contain the cell data
 
     public Board(){
-        super();
     }
     public Board(ArrayList<ArrayList<Boolean>> board){
         this.replaceBoard(board);

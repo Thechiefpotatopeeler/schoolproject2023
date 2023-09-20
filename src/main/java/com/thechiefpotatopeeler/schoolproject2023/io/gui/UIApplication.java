@@ -8,9 +8,8 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -24,9 +23,9 @@ import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * @author Thomas Jackson
@@ -103,11 +102,6 @@ public class UIApplication extends Application {
         stage.show();
         window.setOnCloseRequest(e -> exitProcedures());
     }
-
-    /**
-     * The switches the scene to the game scene
-     * */
-
     /**
      * Builds the scene for the menu
      * @return The menu scene
@@ -229,8 +223,12 @@ public class UIApplication extends Application {
             fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(JSON_FILE_FILTER_TAG, JSON_FILE_FILTER));
             File file = fileChooser.showOpenDialog(window);
             try {
-                Board board =  new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-                BoardHandler.currentBoard = new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+                Board board = new JSONHandler().loadBoard(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+                if(board.getWidth()!=BoardHandler.currentBoard.getWidth()||board.getHeight()!=BoardHandler.currentBoard.getHeight()){
+                    showErrorPopup(BOARD_LOAD_ERROR_HEADER, "The file you selected was not the same size as your current board, please change the size.");
+                    return;
+                }
+                BoardHandler.currentBoard = board;
             } catch (IOException | ParseException | ClassCastException ex) {
                 if(ex instanceof ClassCastException){//Handles the case where the file is not a valid board file
                     showErrorPopup(BOARD_LOAD_ERROR_HEADER,"The file you selected is not a valid board file");
@@ -267,11 +265,10 @@ public class UIApplication extends Application {
     }
 
     /**
-     * Calculates the dimensions of cellUIComponents
+     * Fills a blank board for the game to use
      * */
     public static void initGame() {
-        BoardHandler.currentBoard.fillBlankBoard(BoardHandler.getWidth(), BoardHandler.ySize);
-        cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/BoardHandler.currentBoard.getWidth();
+        BoardHandler.currentBoard.fillBlankBoard(BoardHandler.getWidth(), BoardHandler.getHeight());
     }
 
     /**
@@ -280,21 +277,21 @@ public class UIApplication extends Application {
      * Adds the mouse click functionality to the cell grid
      * */
     public static void initCellGrid(){
+        cellUISize = ((int)(((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight())*0.75D))/BoardHandler.currentBoard.getWidth();
         cellGrid = new Pane();
         Board board = BoardHandler.currentBoard;
         for (int i = 0; i < board.getWidth(); i++) {
             for (int j = 0; j < board.getHeight(); j++) {
-                boolean cell = board.getCell(j,i);
                 CellUIComponent cellUI = new CellUIComponent(j,i);
                 cellGrid.getChildren().add(cellUI);
             }
         }
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
+        EventHandler<MouseEvent> mouseHandler = new EventHandler<>() {
             @Override
             public void handle(MouseEvent event) {
                 int x = (int) event.getX() / cellUISize;
                 int y = (int) event.getY() / cellUISize;
-                BoardHandler.currentBoard.setCell(x, y, !BoardHandler.currentBoard.getCell(x, y));
+                BoardHandler.currentBoard.setCell(x, y, Boolean.FALSE.equals(BoardHandler.currentBoard.getCell(x, y)));
             }
         };
         //Adds the action to the cell grid

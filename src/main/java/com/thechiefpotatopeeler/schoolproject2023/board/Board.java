@@ -85,14 +85,20 @@ public class Board {
      * */
     public int countLivingCellNeighbours(int dimX, int dimY){
         int count=0;
-        if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
+        /*if(Boolean.TRUE.equals(getCell(dimX, dimY - 1))) count++;
         if(Boolean.TRUE.equals(getCell(dimX, dimY + 1))) count++;
         if(Boolean.TRUE.equals(getCell(dimX - 1, dimY))) count++;
         if(Boolean.TRUE.equals(getCell(dimX - 1, dimY - 1))) count++;
         if(Boolean.TRUE.equals(getCell(dimX - 1, dimY + 1))) count++;
         if(Boolean.TRUE.equals(getCell(dimX + 1, dimY))) count++;
         if(Boolean.TRUE.equals(getCell(dimX + 1, dimY - 1))) count++;
-        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY + 1))) count++;
+        if(Boolean.TRUE.equals(getCell(dimX + 1, dimY + 1))) count++;*/
+        for(int i = -1; i < 2; i++){
+            for(int j = -1; j < 2; j++){
+                if (i==0 && j==0) continue;
+                if(Boolean.TRUE.equals(getCell(dimX + i, dimY + j))) count++;
+            }
+        }
         return count;
    }
 

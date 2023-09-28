@@ -9,7 +9,6 @@ import com.thechiefpotatopeeler.schoolproject2023.board.BoardHandler;
 
 /**
  * @author Thomas Jackson
- *
  * Class that handles the UI in text mode.
  * @deprecated
  * */

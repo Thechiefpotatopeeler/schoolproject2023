@@ -137,6 +137,8 @@ public class UIApplication extends Application {
 
         //The start button
         Button startButton = new Button(START_LABEL);
+        startButton.setTooltip(new Tooltip(("Boards over 100x100 cells may take a while to load or be too small too see")));
+        startButton.tooltipProperty().get().setShowDelay(javafx.util.Duration.millis(5));
         startButton.setOnAction(e ->{
             try{
                 BoardHandler.setSize(Integer.parseInt(xInput.getText()),Integer.parseInt(yInput.getText()));
@@ -153,7 +155,7 @@ public class UIApplication extends Application {
         BorderPane layout = new BorderPane();
         layout.setTop(buttons);
         layout.setCenter(textBoxes);
-        return new Scene(layout, 300, 250);
+        return new Scene(layout, 250, 100);
     }
 
     /**
